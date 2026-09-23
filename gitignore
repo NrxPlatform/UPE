@@ -1,0 +1,82 @@
+# CMake and out-of-source builds
+/build/
+/build-*/
+/cmake-build-*/
+/out/
+/_build/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+CTestTestfile.cmake
+Testing/
+compile_commands.json
+Makefile
+build.ninja
+.ninja_deps
+.ninja_log
+install_manifest.txt
+
+# Compiled objects, libraries and executables
+*.o
+*.obj
+*.a
+*.lib
+*.so
+*.so.*
+*.dylib
+*.dll
+*.exe
+*.out
+*.pdb
+*.ilk
+*.dSYM/
+
+# Compiler, coverage, sanitizer and profiling artifacts
+*.gcda
+*.gcno
+*.gcov
+*.profraw
+*.profdata
+*.prof
+*.profdata
+coverage/
+coverage-*/
+*.lcov
+core
+core.*
+
+# IDEs and editors
+.vscode/
+.idea/
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Python or helper-tool caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# Local-only settings and temporary files
+.env
+.env.*
+!.env.example
+*.tmp
+*.temp
+*.bak
+*.orig
+*.log
+
+# Do not ignore docs/, tests/, fixtures/, or golden test outputs:
+# reviewed test data and architecture specifications belong in Git.
