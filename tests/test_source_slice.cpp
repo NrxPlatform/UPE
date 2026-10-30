@@ -1,6 +1,5 @@
 #include "upe/source.hpp"
 #include <cassert>
-
 int main() {
   auto source = upe::SourceSnapshot::create("0123456789");
   upe::SourceSlice slice(source, {2, 8});

@@ -1,6 +1,5 @@
 #include "upe/source.hpp"
 #include <cassert>
-
 int main() {
   auto source = upe::SourceSnapshot::create("a\r\nb\rc\nd");
   auto a = source->locate(0); assert(a.line == 0 && a.byte_column == 0);

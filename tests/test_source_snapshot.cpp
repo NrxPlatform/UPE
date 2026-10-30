@@ -1,7 +1,6 @@
 #include "upe/source.hpp"
 #include <cassert>
 #include <string>
-
 int main() {
   std::string raw("\xef\xbb\xbf" "A\0B\xff", 7);
   auto source = upe::SourceSnapshot::create(raw, "fixture", 3);
