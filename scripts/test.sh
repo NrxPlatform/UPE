@@ -5,24 +5,28 @@ ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 MODE=debug
 FILTER=""
 CLEAN=0
+REBUILD=0
 JOBS=2
 
 usage() {
   cat <<'USAGE'
-Usage: ./scripts/test.sh [--release | --asan] [--filter PATTERN] [--clean] [--jobs N]
+Usage: ./scripts/test.sh [--release | --asan] [--filter PATTERN] [--clean | --rebuild] [--jobs N]
 
   (no options)     Build and run all tests in Debug mode
   --release        Build and run all tests in Release mode
   --asan           Build and run all tests with ASan + UBSan (GCC/Clang)
   --filter PATTERN Only build and run tests whose CTest names match PATTERN
-  --clean          Remove only the selected mode's build directory first
+  --clean          Delete the selected build directory and EXIT (no rebuild)
+  --rebuild        Delete the selected build directory, then build and test
   --jobs N         Parallel build jobs (default: 2)
 
 Examples:
   ./scripts/test.sh
   ./scripts/test.sh --filter token
   ./scripts/test.sh --release --jobs 4
-  ./scripts/test.sh --asan --clean
+  ./scripts/test.sh --clean
+  ./scripts/test.sh --rebuild
+  ./scripts/test.sh --asan --rebuild
 USAGE
 }
 
@@ -35,6 +39,7 @@ while (($#)); do
       if (($# < 2)) || [[ -z "$2" ]]; then echo '--filter requires a pattern' >&2; exit 2; fi
       FILTER="$2"; shift 2 ;;
     --clean) CLEAN=1; shift ;;
+    --rebuild) REBUILD=1; shift ;;
     --jobs)
       if (($# < 2)) || [[ ! "$2" =~ ^[1-9][0-9]*$ ]]; then echo '--jobs requires a positive integer' >&2; exit 2; fi
       JOBS="$2"; shift 2 ;;
@@ -43,8 +48,28 @@ while (($#)); do
   esac
 done
 
+if ((CLEAN && REBUILD)); then
+  echo '--clean and --rebuild cannot be combined' >&2
+  exit 2
+fi
+if ((CLEAN)) && [[ -n "$FILTER" ]]; then
+  echo '--filter cannot be combined with --clean (clean removes the whole selected build directory)' >&2
+  exit 2
+fi
+
 BUILD_DIR="$ROOT/build/$MODE"
-if ((CLEAN)); then rm -rf -- "$BUILD_DIR"; fi
+# The path is derived from ROOT and a fixed mode, never from user-provided paths.
+if ((CLEAN || REBUILD)); then
+  if [[ -d "$BUILD_DIR" ]]; then
+    rm -rf -- "$BUILD_DIR"
+    echo "Removed $BUILD_DIR"
+  else
+    echo "Already clean: $BUILD_DIR does not exist"
+  fi
+fi
+if ((CLEAN)); then
+  exit 0
+fi
 
 args=(-S "$ROOT" -B "$BUILD_DIR" -DBUILD_TESTING=ON)
 case "$MODE" in
