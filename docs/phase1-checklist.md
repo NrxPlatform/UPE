@@ -68,3 +68,24 @@ sharing before adopting a permanent packed representation.
 **Acceptance boundary:** Layout comparison and decision completed for the Phase 1 prototype.
 The actual rollback-capable CST builder, red views, and grammar/parser execution remain
 subsequent tasks.
+
+## P1.3 grammar and parser contracts (2026-11-01)
+
+- [x] Native C++ grammar builder: token/literal, sequence, choice, optional, repetition,
+      predicates, references, EOF, cut, syntax node, and native descriptor contracts.
+- [x] Rule ownership, stable declared rule IDs, forward declarations, immutable snapshot
+      freeze, deterministic versioned fingerprint (non-cryptographic FNV-1a).
+- [x] Validation reports: pinned grammar identity, missing definitions/references,
+      invalid native registrations, left-recursive rule cycles, nullable repetitions,
+      cut scope, unreachable-rule warnings. Detection is conservative; token/syntax
+      registries and contextual validation require later extension.
+- [x] Session contract prototype: explicit outcome status, monotonic resource budgets,
+      cursor/event/diagnostic/context checkpoint rollback, choice-scoped cut state.
+- [x] Separate independent CMake tests: `grammar.api`, `grammar.validation`, `parse.session`.
+- [ ] **Not part of P1.3:** actual PEG execution, runtime grammar interpretation,
+      contextual lexer checkpoint adapter, production native hook execution, runtime error
+      recovery, memoization, and full grammar/static analysis.
+
+The P1.3 API is an early, deliberately limited executable contract, not a claim of
+full conformance with `04-grammar-api.md`. Remaining gaps are tracked for the PEG
+runtime and Phase 1 integration review (P1.4).
