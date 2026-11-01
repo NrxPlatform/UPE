@@ -6,7 +6,7 @@
 - [x] Implement and test BOM/invalid UTF-8 policy and Unicode coordinate adapters (P1.1).
 - [x] Implement token/trivia, synthetic and error element contracts and diagnostic records (P1.1).
 - [x] Implement two green-node storage prototypes; run initial reconstruction, lifetime, validation and layout measurements (P1.2).
-- [ ] Finalize storage layout after representative multi-shape benchmarking (P1.2 decision gate).
+- [x] Select the flat index-arena as Phase 1 default after multi-shape synthetic benchmarking (P1.2 decision gate); revisit for structural sharing and real-world workloads.
 - [ ] Specify event-based CST builder with rollback checkpoints.
 - [ ] Compile-only examples for all C++ grammar combinators and native hooks.
 - [ ] Grammar graph validation and freeze API contracts.
@@ -41,3 +41,30 @@ Phase 1 is not accepted until all checklist items and the exit criteria in `01-i
 - **Not yet locked:** canonical layout, packed arena design, red views, embedded roots,
   concurrent reads, representative real-world tree shapes and statistically sound benchmarks.
 - Event input is a prototype format, **not** the rollback-capable builder specified for P1.3.
+
+## P1.2 storage-layout decision (2026-11-01)
+
+**Decision:** choose `FlatGreenTree` (index-based arena) as the Phase 1 default representation.
+Keep `SharedGreenTree` as a comparison prototype, not a required execution-path dependency.
+This is a reversible decision; a packed arena, immutable-node interning, and incremental
+structural sharing remain future optimization work. Do not remove either prototype yet.
+
+The upgraded `bench_syntax_layout` tests four _synthetic_ tree shapes (9 repetitions, median,
+Release, this development container). All cases reconstruct identical bytes:
+
+| Shape                                    | Leaves | Flat build (µs) | Shared build (µs) | Flat reconstruct (µs) | Shared reconstruct (µs) | Flat estimate (bytes) | Shared estimate (bytes) |
+| ---------------------------------------- | -----: | --------------: | ----------------: | --------------------: | ----------------------: | --------------------: | ----------------------: |
+| Wide                                     | 12,000 |             519 |               791 |                    46 |                      67 |             1,655,136 |               1,728,184 |
+| Grouped (12 per node)                    | 12,000 |             576 |               583 |                    45 |                      75 |             1,657,696 |               1,816,184 |
+| Deep (64 nested groups + per-leaf nodes) |  2,000 |             100 |               187 |                    11 |                      17 |               357,920 |                 469,816 |
+| Mixed (48 per node, 8 nested groups)     | 12,000 |             251 |               487 |                    43 |                      68 |             1,654,656 |               1,750,888 |
+
+**Limits:** Results are machine/compiler-specific, not statistical confidence intervals;
+input is synthetic, not sampled from real programming languages; estimated storage is not
+RSS and excludes shared source bytes and allocator overhead. Repeat on production-sized
+repositories and measure allocation count, cache effects, real memory, and incremental
+sharing before adopting a permanent packed representation.
+
+**Acceptance boundary:** Layout comparison and decision completed for the Phase 1 prototype.
+The actual rollback-capable CST builder, red views, and grammar/parser execution remain
+subsequent tasks.

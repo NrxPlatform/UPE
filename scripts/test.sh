@@ -23,8 +23,10 @@ Usage: ./scripts/test.sh [--release | --asan] [--filter PATTERN] [--clean | --re
 Examples:
   ./scripts/test.sh
   ./scripts/test.sh --filter token
-  ./scripts/test.sh --release --jobs 4
+  ./scripts/test.sh --release --jobs 
   ./scripts/test.sh --clean
+  ./scripts/test.sh --release --clean
+  ./scripts/test.sh --asan --clean
   ./scripts/test.sh --rebuild
   ./scripts/test.sh --asan --rebuild
 USAGE
