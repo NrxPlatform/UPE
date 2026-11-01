@@ -89,3 +89,13 @@ subsequent tasks.
 The P1.3 API is an early, deliberately limited executable contract, not a claim of
 full conformance with `04-grammar-api.md`. Remaining gaps are tracked for the PEG
 runtime and Phase 1 integration review (P1.4).
+
+## P1.4 integration and audit (2026-11-01)
+
+- [x] Cross-component lossless source → lexical → speculative session → CST integration test.
+- [x] Compile-only full combinator API example with frozen-fingerprint reproducibility test.
+- [x] Review available implementation against Phase 1 exit criteria; record missing contracts.
+- [ ] **Phase 1 sign-off blocked**: see `docs/phase1-acceptance-audit.md` and P1.4a–g.
+
+P1.4 test additions are acceptance _evidence_, not proof that all Phase 1 contracts
+are complete.
