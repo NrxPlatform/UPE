@@ -32,9 +32,9 @@ P1.1, P1.2, layout-decision, P1.3 and test-runner patches, **not** a live checko
 
 ## Gated follow-up checklist (ad hoc)
 
-- [ ] P1.4a: finalize explicit parse-result/status mapping and failure metadata.
-- [ ] P1.4b: design lexer checkpoint integration and context ownership (no PEG executor).
-- [ ] P1.4c: specify farthest-failure diagnostic accumulation and committed-error distinction.
+- [x] P1.4a: finalize explicit parse-result/status mapping and failure metadata.
+- [x] P1.4b: design lexer checkpoint integration and context ownership (no PEG executor).
+- [x] P1.4c: specify farthest-failure diagnostic accumulation and committed-error distinction.
 - [ ] P1.4d: specify native-hook purity, input bounds, rollback and memoization eligibility.
 - [ ] P1.4e: specify production CST builder checkpoint generation and red-view ownership.
 - [ ] P1.4f: verify Phase 0 compiler/CI/sanitizer baseline and license/provenance policy.
@@ -43,3 +43,11 @@ P1.1, P1.2, layout-decision, P1.3 and test-runner patches, **not** a live checko
 **Gate:** Phase 1 must remain open until the documented Phase 1 exit criteria are
 satisfied or explicitly re-scoped in the authoritative master implementation plan.
 Do not promote tentative prototypes to stable public APIs merely because their tests pass.
+
+## Batch 1 verification note (P1.4a–c)
+
+- Added structured `FailureReason`, terminal outcome validation, and explicit limit/cut failure metadata. This is a contract-level mapping, **not** PEG runtime status production.
+- Added session-owned lexer mode/indent/byte-offset state captured by parser checkpoints; external language-specific lexer integration remains deferred.
+- Added a farthest-failure expectation accumulator (survives branch rollback) distinct from tentative diagnostics (rolled back) and committed diagnostic records (survive rollback). The latter charge the monotonic diagnostic budget.
+- New isolated tests: `parse.result`, `lexer.checkpoint`, `parse.failures`.
+- **Batch 1 is contract-level only.** Other P1.4 items, Phase 0 baseline, and final Phase 1 acceptance remain open.

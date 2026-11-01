@@ -99,3 +99,10 @@ runtime and Phase 1 integration review (P1.4).
 
 P1.4 test additions are acceptance _evidence_, not proof that all Phase 1 contracts
 are complete.
+
+## P1.4 Batch 1 — contract hardening
+
+- [x] P1.4a terminal result/failure metadata; independently tested (`parse.result`).
+- [x] P1.4b snapshot/restore lexer mode, indent, and byte offset (`lexer.checkpoint`).
+- [x] P1.4c farthest speculative expectations versus rolled-back and committed diagnostics (`parse.failures`).
+- [ ] P1.4d–g and original Phase 1 acceptance/signoff remain open.
