@@ -67,3 +67,11 @@ Do not promote tentative prototypes to stable public APIs merely because their t
 - Focused tests `syntax.builder`, `syntax.red_view` build independently, and the complete reconstructed test suite passes Debug and Release (24/24); new sanitizer tests pass (2/2, leak checking disabled).
 - **P1.4e closed at contract level.** No PEG executor exists yet; coordination with `SessionContracts` checkpoints and incremental red-view caches remain deferred to runtime phases.
 - P1.4f and P1.4g remain open, so Phase 1 is **not** signed off.
+
+## Batch 4 — baseline and final audit (2026-11-02)
+
+- Added build/test presets, GCC/Clang GitHub Actions workflow, warnings-as-errors baseline, and standalone contract smoke executable.
+- Converted the three original `assert()`-based tests to Release-safe `CHECK()` assertions after compiler warnings exposed unused variables under `NDEBUG`.
+- Reconstructed-source verification: GCC Debug/Release/ASan+UBSan and Clang Debug all pass **25/25**; ASan leak detection disabled. Fresh focused target build compiled no unrelated test `.cpp` sources.
+- Added `docs/phase0-baseline.md` and `docs/phase1-batch4-verification.md` for provenance, test evidence, and unresolved baseline decisions.
+- **P1.4f/g NOT SIGNED OFF**: exact GitHub SHA and CI results are unavailable from this environment; portability/ABI and public licensing decisions also remain explicit. Leave original sign-off checklist item unchecked.

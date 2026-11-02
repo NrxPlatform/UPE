@@ -7,10 +7,10 @@
 - [x] Implement token/trivia, synthetic and error element contracts and diagnostic records (P1.1).
 - [x] Implement two green-node storage prototypes; run initial reconstruction, lifetime, validation and layout measurements (P1.2).
 - [x] Select the flat index-arena as Phase 1 default after multi-shape synthetic benchmarking (P1.2 decision gate); revisit for structural sharing and real-world workloads.
-- [ ] Specify event-based CST builder with rollback checkpoints.
-- [ ] Compile-only examples for all C++ grammar combinators and native hooks.
-- [ ] Grammar graph validation and freeze API contracts.
-- [ ] Explicit parse status, resource budget, speculative diagnostics and cut contracts.
+- [x] Specify event-based CST builder with rollback checkpoints.
+- [x] Compile-only examples for all C++ grammar combinators and native hooks.
+- [x] Grammar graph validation and freeze API contracts.
+- [x] Explicit parse status, resource budget, speculative diagnostics and cut contracts.
 - [ ] Phase 0 baseline and Phase 1 contract review/signoff.
 
 Phase 1 is not accepted until all checklist items and the exit criteria in `01-implementation-plan.md` are satisfied.
@@ -127,3 +127,17 @@ are complete.
 - [x] Debug 24/24, Release 24/24, ASan+UBSan new tests 2/2 (leak detection disabled).
 - [ ] Parser-session/CST-builder checkpoint coordination is a Phase 2 executor integration concern; Phase 1 builder and session remain independent contracts.
 - [ ] Phase 0 baseline and exact-revision signoff remain open (P1.4f/g).
+
+## P1.4 Batch 4 — Phase 0 foundation and acceptance verification (2026-11-02)
+
+- [x] Add CMake Debug/Release/sanitizer presets and a GitHub Actions GCC/Clang test matrix.
+- [x] Activate `-Wall -Wextra -Wpedantic -Werror` for GNU/Clang targets; verify compilation with warnings-as-errors enabled.
+- [x] Add an independently buildable standalone contract smoke consumer, not a claim of PEG runtime completeness.
+- [x] Replace disabled-in-Release `assert` checks in the three starter source tests with always-active `CHECK` checks.
+- [x] Run reconstructed local test matrix: GCC Debug 25/25, GCC Release 25/25, GCC ASan+UBSan 25/25 (`detect_leaks=0`), Clang Debug 25/25.
+- [x] Verify fresh focused `test_token_trivia` build compiles only its own test source (plus needed libraries).
+- [x] Add provenance/redistribution notes and an acceptance evidence schema in `docs/phase0-baseline.md`.
+- [ ] P1.4f final: verify CI run results and approve all Phase 0 portability/provenance policies on the actual repository revision.
+- [ ] P1.4g final: run and archive exact-GitHub-commit matrix and signed Phase 1 acceptance review.
+
+**Final original Phase 1 sign-off item remains unchecked.** See `docs/phase1-batch4-verification.md`; local reconstructed results cannot certify an unverified remote Git commit.

@@ -1,0 +1,19 @@
+{
+  "version": 3,
+  "cmakeMinimumRequired": {"major": 3, "minor": 20, "patch": 0},
+  "configurePresets": [
+    {"name": "debug", "displayName": "Debug", "generator": "Unix Makefiles", "binaryDir": "${sourceDir}/build/debug", "cacheVariables": {"CMAKE_BUILD_TYPE": "Debug", "BUILD_TESTING": "ON"}},
+    {"name": "release", "displayName": "Release", "generator": "Unix Makefiles", "binaryDir": "${sourceDir}/build/release", "cacheVariables": {"CMAKE_BUILD_TYPE": "Release", "BUILD_TESTING": "ON"}},
+    {"name": "sanitizers", "displayName": "ASan + UBSan (GCC/Clang)", "generator": "Unix Makefiles", "binaryDir": "${sourceDir}/build/asan", "cacheVariables": {"CMAKE_BUILD_TYPE": "Debug", "BUILD_TESTING": "ON", "CMAKE_CXX_FLAGS": "-fsanitize=address,undefined -fno-omit-frame-pointer", "CMAKE_EXE_LINKER_FLAGS": "-fsanitize=address,undefined"}}
+  ],
+  "buildPresets": [
+    {"name": "debug-tests", "configurePreset": "debug", "targets": ["upe_tests"]},
+    {"name": "release-tests", "configurePreset": "release", "targets": ["upe_tests"]},
+    {"name": "sanitizer-tests", "configurePreset": "sanitizers", "targets": ["upe_tests"]}
+  ],
+  "testPresets": [
+    {"name": "debug", "configurePreset": "debug", "output": {"outputOnFailure": true}},
+    {"name": "release", "configurePreset": "release", "output": {"outputOnFailure": true}},
+    {"name": "sanitizers", "configurePreset": "sanitizers", "output": {"outputOnFailure": true}}
+  ]
+}
