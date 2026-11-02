@@ -35,8 +35,8 @@ P1.1, P1.2, layout-decision, P1.3 and test-runner patches, **not** a live checko
 - [x] P1.4a: finalize explicit parse-result/status mapping and failure metadata.
 - [x] P1.4b: design lexer checkpoint integration and context ownership (no PEG executor).
 - [x] P1.4c: specify farthest-failure diagnostic accumulation and committed-error distinction.
-- [ ] P1.4d: specify native-hook purity, input bounds, rollback and memoization eligibility.
-- [ ] P1.4e: specify production CST builder checkpoint generation and red-view ownership.
+- [x] P1.4d: specify native-hook purity, input bounds, rollback and memoization eligibility.
+- [x] P1.4e: specify production CST builder checkpoint generation and red-view ownership.
 - [ ] P1.4f: verify Phase 0 compiler/CI/sanitizer baseline and license/provenance policy.
 - [ ] P1.4g: run and archive complete test matrix against the exact GitHub revision.
 
@@ -59,3 +59,11 @@ Do not promote tentative prototypes to stable public APIs merely because their t
 - Isolated tests: `grammar.native_contract`, `grammar.freeze_contract`, `grammar.compile_contract`.
 - These are **declarative contracts**, not runtime enforcement of native hooks or a formal proof of purity. Runtime enforcement remains Phase 2 work.
 - All original Phase 1 acceptance items stay subject to end-of-phase review; P1.4e–g remain open.
+
+## Batch 3 verification note (P1.4e, 2026-11-02)
+
+- Implemented a standalone, transaction-aware `CstEventBuilder` on top of the default flat green-tree implementation. Nested rollback invalidates younger handles; stale/foreign handles are rejected. Building an unfinished tree or while a checkpoint remains open is rejected.
+- `RedNode` provides immutable parent-relative navigation and absolute byte ranges while retaining ownership of the immutable green tree. Red views are safe after original tree/source handles are released.
+- Focused tests `syntax.builder`, `syntax.red_view` build independently, and the complete reconstructed test suite passes Debug and Release (24/24); new sanitizer tests pass (2/2, leak checking disabled).
+- **P1.4e closed at contract level.** No PEG executor exists yet; coordination with `SessionContracts` checkpoints and incremental red-view caches remain deferred to runtime phases.
+- P1.4f and P1.4g remain open, so Phase 1 is **not** signed off.

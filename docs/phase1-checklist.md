@@ -116,3 +116,14 @@ are complete.
 - [x] Compile native-hook and every grammar combinator API with an isolated test executable.
 - [ ] Phase 2 executor must enforce these declarations at runtime, including cancellation and backtracking; no hooks are run in P1.4.
 - [ ] Formal Phase 1 sign-off remains gated by P1.4e–g and full grammar conformance audit.
+
+## P1.4 Batch 3 — CST event builder and red views (2026-11-02)
+
+- [x] Implement a dedicated event-based CST builder producing the Phase 1 default `FlatGreenTree`.
+- [x] Checkpoint handles are per-instance, serial-numbered, and cannot be restored after commit/rollback; rollback invalidates younger nested checkpoints.
+- [x] Commit requires the most recently opened checkpoint; finalization rejects open checkpoints, unfinished roots, or invalid lexical coverage.
+- [x] Red views pin `shared_ptr<const FlatGreenTree>` and calculate absolute ranges from immutable green widths; nested views outlive the original tree owner without parent reference cycles.
+- [x] Independently compiled `syntax.builder` and `syntax.red_view` tests.
+- [x] Debug 24/24, Release 24/24, ASan+UBSan new tests 2/2 (leak detection disabled).
+- [ ] Parser-session/CST-builder checkpoint coordination is a Phase 2 executor integration concern; Phase 1 builder and session remain independent contracts.
+- [ ] Phase 0 baseline and exact-revision signoff remain open (P1.4f/g).

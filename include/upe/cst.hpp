@@ -29,6 +29,7 @@ struct GreenMetrics {
 
 // Index-addressed immutable-after-construction arena prototype.
 class FlatGreenTree final {
+  friend class RedNode;
 public:
   static FlatGreenTree build(std::shared_ptr<const SourceSnapshot> source,
                              std::span<const LexicalElement> leaves,
