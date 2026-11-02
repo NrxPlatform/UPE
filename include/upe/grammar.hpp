@@ -20,7 +20,22 @@ struct Expression {
   RuleHandle reference{};
   std::string bytes;
 };
-struct NativeRuleDescriptor { NativeRuleId id; std::string stable_name; bool may_match_empty{}; bool consumes_input_contract{true}; };
+// Native functions are not executed by this API. These are static promises that
+// the Phase 2 dispatcher must enforce at the session boundary.
+enum class NativeSideEffects { none, transactional, external };
+enum class NativeContextPolicy { none, checkpointed, external };
+struct NativeRuleDescriptor {
+  NativeRuleId id;
+  std::string stable_name;
+  bool may_match_empty{};
+  bool consumes_input_contract{true};
+  NativeSideEffects side_effects{NativeSideEffects::none};
+  NativeContextPolicy context{NativeContextPolicy::none};
+  bool cancellation_safe{true};
+  bool supports_rollback{true};
+  bool memoizable{false};
+  std::uint32_t declared_lookahead_bytes{}; // 0 = unknown, not an enforced bound
+};
 struct Issue { enum class Level { warning, error }; Level level; std::string code, message; };
 struct ValidationReport {
   std::vector<Issue> issues;
@@ -33,11 +48,15 @@ public:
   const std::vector<Expression>& expressions() const noexcept { return expressions_; }
   std::string_view fingerprint() const noexcept { return fingerprint_; }
   const std::unordered_map<std::string, RuleId>& entrypoints() const noexcept { return entrypoints_; }
+  const std::unordered_map<std::uint32_t, ExprId>& rule_definitions() const noexcept { return rule_definitions_; }
+  const std::vector<NativeRuleDescriptor>& native_rules() const noexcept { return native_rules_; }
 private:
   friend class GrammarBuilder;
   LanguageKey language_;
   std::vector<Expression> expressions_;
   std::unordered_map<std::string, RuleId> entrypoints_;
+  std::unordered_map<std::uint32_t, ExprId> rule_definitions_;
+  std::vector<NativeRuleDescriptor> native_rules_;
   std::string fingerprint_;
 };
 class GrammarBuilder final {

@@ -106,3 +106,13 @@ are complete.
 - [x] P1.4b snapshot/restore lexer mode, indent, and byte offset (`lexer.checkpoint`).
 - [x] P1.4c farthest speculative expectations versus rolled-back and committed diagnostics (`parse.failures`).
 - [ ] P1.4d–g and original Phase 1 acceptance/signoff remain open.
+
+## P1.4 Batch 2 — grammar/native contract hardening (2026-11-01)
+
+- [x] Add explicit native descriptors for side effects, contextual state, cancellation, rollback, and memoization eligibility.
+- [x] Reject statically unsafe native configurations (`GRAM-11`, `GRAM-12`); pure hooks may opt into memoization.
+- [x] Preserve rule definitions and native descriptors in immutable frozen snapshots.
+- [x] Ensure native safety metadata affects content fingerprints.
+- [x] Compile native-hook and every grammar combinator API with an isolated test executable.
+- [ ] Phase 2 executor must enforce these declarations at runtime, including cancellation and backtracking; no hooks are run in P1.4.
+- [ ] Formal Phase 1 sign-off remains gated by P1.4e–g and full grammar conformance audit.

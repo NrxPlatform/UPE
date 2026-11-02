@@ -51,3 +51,11 @@ Do not promote tentative prototypes to stable public APIs merely because their t
 - Added a farthest-failure expectation accumulator (survives branch rollback) distinct from tentative diagnostics (rolled back) and committed diagnostic records (survive rollback). The latter charge the monotonic diagnostic budget.
 - New isolated tests: `parse.result`, `lexer.checkpoint`, `parse.failures`.
 - **Batch 1 is contract-level only.** Other P1.4 items, Phase 0 baseline, and final Phase 1 acceptance remain open.
+
+## Batch 2 verification note (P1.4d)
+
+- Native descriptor contracts now include effect, context, rollback, cancellation, lookahead declaration, and memoization eligibility. Unsafe static descriptors fail validation.
+- Frozen grammar now exposes immutable rule definitions and native metadata; native-contract flags participate in the fingerprint.
+- Isolated tests: `grammar.native_contract`, `grammar.freeze_contract`, `grammar.compile_contract`.
+- These are **declarative contracts**, not runtime enforcement of native hooks or a formal proof of purity. Runtime enforcement remains Phase 2 work.
+- All original Phase 1 acceptance items stay subject to end-of-phase review; P1.4e–g remain open.

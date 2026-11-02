@@ -87,6 +87,22 @@ ValidationReport GrammarBuilder::validate() const {
     if (!rule.defined) error("GRAM-02", "undefined rule: " + rule.name);
     else definitions.emplace(rule.id.value, rule.definition);
   }
+  // A native descriptor is an explicit promise about possible parser state.
+  // This is validation only: the Phase 2 executor must enforce these promises.
+  for (const auto& n : natives_) {
+    if (n.side_effects == NativeSideEffects::external)
+      error("GRAM-11", "external native effects cannot be backtracked safely: " + n.stable_name);
+    if (!n.cancellation_safe)
+      error("GRAM-11", "native must support cancellation: " + n.stable_name);
+    if ((n.side_effects == NativeSideEffects::transactional ||
+         n.context == NativeContextPolicy::checkpointed) && !n.supports_rollback)
+      error("GRAM-11", "stateful native must support rollback: " + n.stable_name);
+    if (n.context == NativeContextPolicy::external)
+      error("GRAM-11", "external native context cannot be checkpointed: " + n.stable_name);
+    if (n.memoizable && (n.side_effects != NativeSideEffects::none ||
+                         n.context != NativeContextPolicy::none || !n.supports_rollback))
+      error("GRAM-12", "memoization requires pure, context-free, rollback-safe native: " + n.stable_name);
+  }
   for (std::size_t i = 0; i < expressions_.size(); ++i) {
     const auto& expr = expressions_[i];
     for (const auto operand : expr.operands) if (operand.value >= expressions_.size()) error("GRAM-02", "invalid expression operand at " + std::to_string(i));
@@ -165,11 +181,16 @@ std::shared_ptr<const FrozenGrammar> GrammarBuilder::freeze(const ValidationRepo
   const auto report = validate();
   if (!report.valid()) throw std::logic_error("cannot freeze invalid grammar");
   auto frozen = std::make_shared<FrozenGrammar>();
-  frozen->language_ = language_; frozen->expressions_ = expressions_; frozen->entrypoints_ = entrypoints_;
+  frozen->language_ = language_; frozen->expressions_ = expressions_;
+  frozen->entrypoints_ = entrypoints_; frozen->native_rules_ = natives_;
+  for (const auto& rule : rules_) frozen->rule_definitions_.emplace(rule.id.value, rule.definition);
   std::ostringstream signature;
   signature << language_.language << '\0' << language_.version << '\0' << language_.profile << '\0' << language_.revision << '\0';
   for (const auto& r : rules_) signature << "R" << r.id.value << ':' << r.name << ':' << r.definition.value << ';';
-  for (const auto& n : natives_) signature << "H" << n.id.value << ':' << n.stable_name << ':' << n.may_match_empty << ';';
+  for (const auto& n : natives_) signature << "H" << n.id.value << ':' << n.stable_name << ':' << n.may_match_empty << ':' << n.consumes_input_contract
+    << ':' << static_cast<int>(n.side_effects) << ':' << static_cast<int>(n.context)
+    << ':' << n.cancellation_safe << ':' << n.supports_rollback << ':'
+    << n.memoizable << ':' << n.declared_lookahead_bytes << ';';
   for (const auto& e : expressions_) {
     signature << "E" << static_cast<int>(e.kind) << ':' << e.kind_id << ':' << e.reference.id.value << ':' << e.bytes.size() << ':' << e.bytes << ':';
     for (auto operand : e.operands) signature << operand.value << ',';
